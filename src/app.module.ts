@@ -23,6 +23,10 @@ import { RatingModule } from './rating/rating.module';
 import { Rating } from './rating/models/rating.model';
 import { CommentModule } from './comment/comment.module';
 import { Comment } from './comment/models/comment.model';
+import { ChatModule } from './chat/chat.module';
+import { Chat } from './chat/models/chat.model';
+import { MessageModule } from './message/message.module';
+import { Message } from './message/models/message.model';
 
 @Module({
   imports: [
@@ -51,6 +55,8 @@ import { Comment } from './comment/models/comment.model';
         Project,
         Rating,
         Comment,
+        Chat,
+        Message,
       ],
       autoLoadModels: true,
       logging: false,
@@ -65,6 +71,8 @@ import { Comment } from './comment/models/comment.model';
     ProjectModule,
     RatingModule,
     CommentModule,
+    ChatModule,
+    MessageModule,
   ],
   controllers: [],
   providers: [],

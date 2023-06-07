@@ -1,6 +1,7 @@
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 import { Rating } from '../../rating/models/rating.model';
 import { Comment } from '../../comment/models/comment.model';
+import { Chat } from '../../chat/models/chat.model';
 
 interface UserAttrs {
   id: string;
@@ -25,4 +26,7 @@ export class User extends Model<User, UserAttrs> {
 
   @HasMany(() => Comment)
   comment: Comment;
+
+  @HasMany(() => Chat)
+  chat: Chat;
 }
