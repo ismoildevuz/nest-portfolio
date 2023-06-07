@@ -23,7 +23,6 @@ export class JobService {
         'company',
         'position',
         'image_id',
-        'createdAt'
       ],
     });
   }

@@ -9,6 +9,8 @@ import { Image } from './image/models/image.model';
 import { ImageModule } from './image/image.module';
 import { JobModule } from './job/job.module';
 import { Job } from './job/models/job.model';
+import { EducationModule } from './education/education.module';
+import { Education } from './education/model/education.model';
 
 @Module({
   imports: [
@@ -26,13 +28,14 @@ import { Job } from './job/models/job.model';
       username: process.env.POSTGRES_USER,
       password: String(process.env.POSTGRES_PASSWORD),
       database: process.env.POSTGRES_DB,
-      models: [User, Image, Job],
+      models: [User, Image, Job, Education],
       autoLoadModels: true,
       logging: false,
     }),
     UserModule,
     ImageModule,
     JobModule,
+    EducationModule,
   ],
   controllers: [],
   providers: [],
