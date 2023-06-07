@@ -27,6 +27,8 @@ import { ChatModule } from './chat/chat.module';
 import { Chat } from './chat/models/chat.model';
 import { MessageModule } from './message/message.module';
 import { Message } from './message/models/message.model';
+import { AdminModule } from './admin/admin.module';
+import { Admin } from './admin/models/admin.model';
 
 @Module({
   imports: [
@@ -57,6 +59,7 @@ import { Message } from './message/models/message.model';
         Comment,
         Chat,
         Message,
+        Admin
       ],
       autoLoadModels: true,
       logging: false,
@@ -73,6 +76,7 @@ import { Message } from './message/models/message.model';
     CommentModule,
     ChatModule,
     MessageModule,
+    AdminModule,
   ],
   controllers: [],
   providers: [],
