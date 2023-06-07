@@ -21,6 +21,8 @@ import { ProjectModule } from './project/project.module';
 import { Project } from './project/models/project.model';
 import { RatingModule } from './rating/rating.module';
 import { Rating } from './rating/models/rating.model';
+import { CommentModule } from './comment/comment.module';
+import { Comment } from './comment/models/comment.model';
 
 @Module({
   imports: [
@@ -48,6 +50,7 @@ import { Rating } from './rating/models/rating.model';
         Skill,
         Project,
         Rating,
+        Comment,
       ],
       autoLoadModels: true,
       logging: false,
@@ -61,6 +64,7 @@ import { Rating } from './rating/models/rating.model';
     SkillModule,
     ProjectModule,
     RatingModule,
+    CommentModule,
   ],
   controllers: [],
   providers: [],

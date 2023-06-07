@@ -9,6 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { Image } from '../../image/models/image.model';
 import { Rating } from '../../rating/models/rating.model';
+import { Comment } from '../../comment/models/comment.model';
 
 interface ProjectAttrs {
   id: string;
@@ -64,4 +65,7 @@ export class Project extends Model<Project, ProjectAttrs> {
 
   @HasMany(() => Rating)
   rating: Rating;
+
+  @HasMany(() => Comment)
+  comment: Comment;
 }
