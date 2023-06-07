@@ -3,7 +3,6 @@ import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Skill } from './models/skill.model';
-import { ImageService } from '../image/image.service';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()

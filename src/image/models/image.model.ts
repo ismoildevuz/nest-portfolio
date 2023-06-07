@@ -3,6 +3,7 @@ import { Job } from '../../job/models/job.model';
 import { Education } from '../../education/model/education.model';
 import { SocialMedia } from '../../social-media/models/social-media.model';
 import { Blog } from '../../blog/models/blog.model';
+import { Project } from '../../project/models/project.model';
 
 interface ImageAttrs {
   id: string;
@@ -33,4 +34,7 @@ export class Image extends Model<Image, ImageAttrs> {
 
   @HasMany(() => Blog)
   blog: Blog;
+
+  @HasMany(() => Project)
+  project: Project;
 }
