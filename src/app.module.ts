@@ -13,6 +13,8 @@ import { EducationModule } from './education/education.module';
 import { Education } from './education/model/education.model';
 import { SocialMediaModule } from './social-media/social-media.module';
 import { SocialMedia } from './social-media/models/social-media.model';
+import { BlogModule } from './blog/blog.module';
+import { Blog } from './blog/models/blog.model';
 
 @Module({
   imports: [
@@ -30,7 +32,7 @@ import { SocialMedia } from './social-media/models/social-media.model';
       username: process.env.POSTGRES_USER,
       password: String(process.env.POSTGRES_PASSWORD),
       database: process.env.POSTGRES_DB,
-      models: [User, Image, Job, Education, SocialMedia],
+      models: [User, Image, Job, Education, SocialMedia, Blog],
       autoLoadModels: true,
       logging: false,
     }),
@@ -39,6 +41,7 @@ import { SocialMedia } from './social-media/models/social-media.model';
     JobModule,
     EducationModule,
     SocialMediaModule,
+    BlogModule,
   ],
   controllers: [],
   providers: [],
