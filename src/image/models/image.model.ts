@@ -1,5 +1,7 @@
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 import { Job } from '../../job/models/job.model';
+import { Education } from '../../education/model/education.model';
+import { SocialMedia } from '../../social-media/models/social-media.model';
 
 interface ImageAttrs {
   id: string;
@@ -21,4 +23,10 @@ export class Image extends Model<Image, ImageAttrs> {
 
   @HasMany(() => Job)
   job: Job;
+
+  @HasMany(() => Education)
+  education: Education;
+
+  @HasMany(() => SocialMedia)
+  socialMedia: SocialMedia;
 }

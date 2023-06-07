@@ -4,13 +4,18 @@ import { UpdateJobDto } from './dto/update-job.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Job } from './models/job.model';
 import { v4 as uuid } from 'uuid';
+import { ImageService } from '../image/image.service';
 
 @Injectable()
 export class JobService {
-  constructor(@InjectModel(Job) private jobRepository: typeof Job) {}
+  constructor(
+    @InjectModel(Job) private jobRepository: typeof Job,
+    private readonly imageService: ImageService,
+  ) {}
 
   async create(createJobDto: CreateJobDto) {
     const id = uuid();
+    await this.imageService.findOne(createJobDto.image_id);
     return this.jobRepository.create({ id, ...createJobDto });
   }
 

@@ -6,10 +6,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { EducationModule } from '../education/education.module';
 
 @Module({
-  imports: [
-    SequelizeModule.forFeature([Image]),
-    forwardRef(() => EducationModule),
-  ],
+  imports: [SequelizeModule.forFeature([Image])],
   controllers: [ImageController],
   providers: [ImageService],
   exports: [ImageService],
