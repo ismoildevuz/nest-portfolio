@@ -19,6 +19,8 @@ import { SkillModule } from './skill/skill.module';
 import { Skill } from './skill/models/skill.model';
 import { ProjectModule } from './project/project.module';
 import { Project } from './project/models/project.model';
+import { RatingModule } from './rating/rating.module';
+import { Rating } from './rating/models/rating.model';
 
 @Module({
   imports: [
@@ -36,7 +38,17 @@ import { Project } from './project/models/project.model';
       username: process.env.POSTGRES_USER,
       password: String(process.env.POSTGRES_PASSWORD),
       database: process.env.POSTGRES_DB,
-      models: [User, Image, Job, Education, SocialMedia, Blog, Skill, Project],
+      models: [
+        User,
+        Image,
+        Job,
+        Education,
+        SocialMedia,
+        Blog,
+        Skill,
+        Project,
+        Rating,
+      ],
       autoLoadModels: true,
       logging: false,
     }),
@@ -48,6 +60,7 @@ import { Project } from './project/models/project.model';
     BlogModule,
     SkillModule,
     ProjectModule,
+    RatingModule,
   ],
   controllers: [],
   providers: [],

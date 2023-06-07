@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { Rating } from '../../rating/models/rating.model';
 
 interface UserAttrs {
   id: string;
@@ -17,4 +18,7 @@ export class User extends Model<User, UserAttrs> {
     type: DataType.STRING,
   })
   fullname: string;
+
+  @HasMany(() => Rating)
+  rating: Rating;
 }

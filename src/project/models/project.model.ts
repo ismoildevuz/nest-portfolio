@@ -3,10 +3,12 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { Image } from '../../image/models/image.model';
+import { Rating } from '../../rating/models/rating.model';
 
 interface ProjectAttrs {
   id: string;
@@ -59,4 +61,7 @@ export class Project extends Model<Project, ProjectAttrs> {
 
   @BelongsTo(() => Image)
   image: Image;
+
+  @HasMany(() => Rating)
+  rating: Rating;
 }
