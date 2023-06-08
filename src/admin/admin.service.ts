@@ -12,6 +12,7 @@ import { Admin } from './models/admin.model';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { LoginAdminDto } from './dto/login-admin.dto';
 
 @Injectable()
 export class AdminService {
@@ -56,8 +57,8 @@ export class AdminService {
     return response;
   }
 
-  async login(createAdminDto: CreateAdminDto) {
-    const { email, password } = createAdminDto;
+  async login(loginAdminDto: LoginAdminDto) {
+    const { email, password } = loginAdminDto;
     const admin = await this.getAdminByEmail(email);
     if (!admin) {
       throw new UnauthorizedException('Email or password is wrong');
