@@ -16,8 +16,4 @@ export class UpdateJobDto {
   @IsOptional()
   @IsString()
   position?: string;
-
-  @IsOptional()
-  @IsString()
-  image_id?: string;
 }

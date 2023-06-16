@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Job } from './models/job.model';
 import { v4 as uuid } from 'uuid';
 import { ImageService } from '../image/image.service';
+import { Image } from '../image/models/image.model';
 
 @Injectable()
 export class JobService {
@@ -13,10 +14,14 @@ export class JobService {
     private readonly imageService: ImageService,
   ) {}
 
-  async create(createJobDto: CreateJobDto) {
-    const id = uuid();
-    await this.imageService.findOne(createJobDto.image_id);
-    return this.jobRepository.create({ id, ...createJobDto });
+  async create(createJobDto: CreateJobDto, images: Express.Multer.File[]) {
+    const uploadedImages = await this.imageService.create(images);
+    const newJob = await this.jobRepository.create({
+      id: uuid(),
+      ...createJobDto,
+      image_id: uploadedImages[0]?.id,
+    });
+    return this.getOne(newJob.id);
   }
 
   async findAll() {
@@ -29,10 +34,45 @@ export class JobService {
         'position',
         'image_id',
       ],
+      include: [Image],
     });
   }
 
   async findOne(id: string) {
+    return this.getOne(id);
+  }
+
+  async update(
+    id: string,
+    updateJobDto: UpdateJobDto,
+    images: Express.Multer.File[],
+  ) {
+    const job = await this.getOne(id);
+    if (images.length) {
+      if (job.image_id) {
+        await this.jobRepository.update({ image_id: null }, { where: { id } });
+        await this.imageService.remove(job.image_id);
+      }
+      const uploadedImages = await this.imageService.create(images);
+      await this.jobRepository.update(
+        { image_id: uploadedImages[0]?.id },
+        { where: { id } },
+      );
+    }
+    await this.jobRepository.update(updateJobDto, { where: { id } });
+    return this.getOne(id);
+  }
+
+  async remove(id: string) {
+    const job = await this.findOne(id);
+    await this.jobRepository.destroy({ where: { id } });
+    if (job.image_id) {
+      await this.imageService.remove(job.image_id);
+    }
+    return job;
+  }
+
+  async getOne(id: string) {
     const job = await this.jobRepository.findOne({
       where: { id },
       attributes: [
@@ -43,22 +83,11 @@ export class JobService {
         'position',
         'image_id',
       ],
+      include: [Image],
     });
     if (!job) {
       throw new HttpException('Job not found', HttpStatus.NOT_FOUND);
     }
-    return job;
-  }
-
-  async update(id: string, updateJobDto: UpdateJobDto) {
-    await this.findOne(id);
-    await this.jobRepository.update(updateJobDto, { where: { id } });
-    return this.findOne(id);
-  }
-
-  async remove(id: string) {
-    const job = await this.findOne(id);
-    await this.jobRepository.destroy({ where: { id } });
     return job;
   }
 }

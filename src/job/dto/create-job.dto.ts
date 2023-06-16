@@ -16,8 +16,4 @@ export class CreateJobDto {
   @IsNotEmpty()
   @IsString()
   position: string;
-
-  @IsNotEmpty()
-  @IsString()
-  image_id: string;
 }

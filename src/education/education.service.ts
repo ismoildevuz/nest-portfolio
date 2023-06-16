@@ -19,12 +19,12 @@ export class EducationService {
     images: Express.Multer.File[],
   ) {
     const uploadedImages = await this.imageService.create(images);
-    const newSocialMedia = await this.educationRepository.create({
+    const newEducation = await this.educationRepository.create({
       id: uuid(),
       ...createEducationDto,
       image_id: uploadedImages[0]?.id,
     });
-    return this.getOne(newSocialMedia.id);
+    return this.getOne(newEducation.id);
   }
 
   async findAll() {
