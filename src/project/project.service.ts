@@ -28,7 +28,7 @@ export class ProjectService {
       ...createProjectDto,
       image_id: uploadedImages[0]?.id,
     });
-    return this.findOne(newProject.id);
+    return this.getOne(newProject.id);
   }
 
   async findAll() {
@@ -43,8 +43,13 @@ export class ProjectService {
         'image_id',
       ],
       include: [
-        { model: Image },
-        Rating,
+        {
+          model: Image,
+        },
+        {
+          model: Rating,
+          attributes: ['id', 'rate'],
+        },
         {
           model: Comment,
           attributes: ['id', 'body', 'createdAt'],
@@ -75,10 +80,7 @@ export class ProjectService {
   ) {
     const project = await this.getOne(id);
     if (images.length) {
-      console.log('test 1');
-
       if (project.image_id) {
-        console.log('test 1');
         await this.projectRepository.update(
           { image_id: null },
           { where: { id } },

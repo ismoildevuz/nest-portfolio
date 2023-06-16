@@ -8,8 +8,4 @@ export class CreateSocialMediaDto {
   @IsNotEmpty()
   @IsString()
   link: string;
-
-  @IsNotEmpty()
-  @IsString()
-  image_id: string;
 }

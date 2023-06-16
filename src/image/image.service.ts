@@ -60,8 +60,6 @@ export class ImageService {
   async createFile(images: Express.Multer.File[]) {
     try {
       const fileNames: string[] = [];
-      console.log(images);
-      
       for (let i = 0; i < images.length; i++) {
         const fileName = (await this.generateUniqueFileName()) + '.jpg';
         const filePath = path.resolve(__dirname, '..', 'static');
@@ -73,8 +71,6 @@ export class ImageService {
       }
       return fileNames;
     } catch (error) {
-      console.log(error);
-
       throw new HttpException(
         'Error with uploading images',
         HttpStatus.INTERNAL_SERVER_ERROR,

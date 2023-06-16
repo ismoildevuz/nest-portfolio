@@ -6,18 +6,25 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { SocialMediaService } from './social-media.service';
 import { CreateSocialMediaDto } from './dto/create-social-media.dto';
 import { UpdateSocialMediaDto } from './dto/update-social-media.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('social-media')
 export class SocialMediaController {
   constructor(private readonly socialMediaService: SocialMediaService) {}
 
   @Post()
-  async create(@Body() createSocialMediaDto: CreateSocialMediaDto) {
-    return this.socialMediaService.create(createSocialMediaDto);
+  @UseInterceptors(FilesInterceptor('images'))
+  async create(
+    @Body() createSocialMediaDto: CreateSocialMediaDto,
+    @UploadedFiles() images: Express.Multer.File[],
+  ) {
+    return this.socialMediaService.create(createSocialMediaDto, images);
   }
 
   @Get()
@@ -31,11 +38,13 @@ export class SocialMediaController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FilesInterceptor('images'))
   async update(
     @Param('id') id: string,
     @Body() updateSocialMediaDto: UpdateSocialMediaDto,
+    @UploadedFiles() images: Express.Multer.File[],
   ) {
-    return this.socialMediaService.update(id, updateSocialMediaDto);
+    return this.socialMediaService.update(id, updateSocialMediaDto, images);
   }
 
   @Delete(':id')

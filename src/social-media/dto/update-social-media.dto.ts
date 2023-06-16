@@ -8,8 +8,4 @@ export class UpdateSocialMediaDto {
   @IsOptional()
   @IsString()
   link?: string;
-
-  @IsOptional()
-  @IsString()
-  image_id?: string;
 }
