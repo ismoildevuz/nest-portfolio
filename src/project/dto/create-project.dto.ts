@@ -16,8 +16,4 @@ export class CreateProjectDto {
   @IsNotEmpty()
   @IsString()
   link_github: string;
-
-  @IsNotEmpty()
-  @IsString()
-  image_id: string;
 }

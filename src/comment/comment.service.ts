@@ -18,7 +18,7 @@ export class CommentService {
   async create(createCommentDto: CreateCommentDto) {
     const id = uuid();
     await this.userService.findOne(createCommentDto.user_id);
-    await this.projectService.findOne(createCommentDto.project_id);
+    await this.projectService.getOne(createCommentDto.project_id);
     return this.commentRepository.create({ id, ...createCommentDto });
   }
 
@@ -41,6 +41,12 @@ export class CommentService {
 
   async update(id: string, updateCommentDto: UpdateCommentDto) {
     await this.findOne(id);
+    if (updateCommentDto.user_id) {
+      await this.userService.findOne(updateCommentDto.user_id);
+    }
+    if (updateCommentDto.project_id) {
+      await this.projectService.getOne(updateCommentDto.project_id);
+    }
     await this.commentRepository.update(updateCommentDto, { where: { id } });
     return this.findOne(id);
   }

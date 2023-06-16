@@ -16,8 +16,4 @@ export class UpdateProjectDto {
   @IsOptional()
   @IsString()
   link_github?: string;
-
-  @IsOptional()
-  @IsString()
-  image_id?: string;
 }

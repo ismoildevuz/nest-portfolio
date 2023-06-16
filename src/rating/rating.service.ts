@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { UpdateRatingDto } from './dto/update-rating.dto';
 import { InjectModel } from '@nestjs/sequelize';
@@ -16,10 +21,12 @@ export class RatingService {
   ) {}
 
   async create(createRatingDto: CreateRatingDto) {
-    const id = uuid();
     await this.userService.findOne(createRatingDto.user_id);
-    await this.projectService.findOne(createRatingDto.project_id);
-    return this.ratingRepository.create({ id, ...createRatingDto });
+    await this.projectService.getOne(createRatingDto.project_id);
+    if (createRatingDto.rate > 5 || createRatingDto.rate < 0) {
+      throw new BadRequestException('Rating must be between 0 and 5');
+    }
+    return this.ratingRepository.create({ id: uuid(), ...createRatingDto });
   }
 
   async findAll() {
@@ -41,6 +48,15 @@ export class RatingService {
 
   async update(id: string, updateRatingDto: UpdateRatingDto) {
     await this.findOne(id);
+    if (updateRatingDto.user_id) {
+      await this.userService.findOne(updateRatingDto.user_id);
+    }
+    if (updateRatingDto.rate) {
+      if (updateRatingDto.rate > 5 || updateRatingDto.rate < 0) {
+        throw new BadRequestException('Rating must be between 0 and 5');
+      }
+      await this.projectService.getOne(updateRatingDto.project_id);
+    }
     await this.ratingRepository.update(updateRatingDto, { where: { id } });
     return this.findOne(id);
   }
