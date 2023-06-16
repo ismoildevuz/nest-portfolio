@@ -16,8 +16,4 @@ export class UpdateEducationDto {
   @IsOptional()
   @IsString()
   major?: string;
-
-  @IsOptional()
-  @IsString()
-  image_id?: string;
 }

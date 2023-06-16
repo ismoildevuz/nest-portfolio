@@ -6,18 +6,25 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { EducationService } from './education.service';
 import { CreateEducationDto } from './dto/create-education.dto';
 import { UpdateEducationDto } from './dto/update-education.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('education')
 export class EducationController {
   constructor(private readonly educationService: EducationService) {}
 
   @Post()
-  async create(@Body() createEducationDto: CreateEducationDto) {
-    return this.educationService.create(createEducationDto);
+  @UseInterceptors(FilesInterceptor('images'))
+  async create(
+    @Body() createEducationDto: CreateEducationDto,
+    @UploadedFiles() images: Express.Multer.File[],
+  ) {
+    return this.educationService.create(createEducationDto, images);
   }
 
   @Get()
@@ -31,11 +38,13 @@ export class EducationController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FilesInterceptor('images'))
   async update(
     @Param('id') id: string,
     @Body() updateEducationDto: UpdateEducationDto,
+    @UploadedFiles() images: Express.Multer.File[],
   ) {
-    return this.educationService.update(id, updateEducationDto);
+    return this.educationService.update(id, updateEducationDto, images);
   }
 
   @Delete(':id')

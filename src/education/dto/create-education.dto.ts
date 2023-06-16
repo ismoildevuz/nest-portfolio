@@ -16,8 +16,4 @@ export class CreateEducationDto {
   @IsNotEmpty()
   @IsString()
   major: string;
-
-  @IsNotEmpty()
-  @IsString()
-  image_id: string;
 }
