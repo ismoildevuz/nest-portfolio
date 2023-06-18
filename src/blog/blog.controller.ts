@@ -6,18 +6,25 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('blog')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
   @Post()
-  async create(@Body() createBlogDto: CreateBlogDto) {
-    return this.blogService.create(createBlogDto);
+  @UseInterceptors(FilesInterceptor('images'))
+  async create(
+    @Body() createBlogDto: CreateBlogDto,
+    @UploadedFiles() images: Express.Multer.File[],
+  ) {
+    return this.blogService.create(createBlogDto, images);
   }
 
   @Get()
@@ -31,8 +38,13 @@ export class BlogController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
-    return this.blogService.update(id, updateBlogDto);
+  @UseInterceptors(FilesInterceptor('images'))
+  async update(
+    @Param('id') id: string,
+    @Body() updateBlogDto: UpdateBlogDto,
+    @UploadedFiles() images: Express.Multer.File[],
+  ) {
+    return this.blogService.update(id, updateBlogDto, images);
   }
 
   @Delete(':id')

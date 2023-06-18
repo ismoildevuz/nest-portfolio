@@ -30,7 +30,7 @@ export class Blog extends Model<Blog, BlogAttrs> {
   title: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.TEXT,
   })
   body: string;
 

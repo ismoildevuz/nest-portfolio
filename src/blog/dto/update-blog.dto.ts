@@ -8,8 +8,4 @@ export class UpdateBlogDto {
   @IsOptional()
   @IsString()
   body?: string;
-
-  @IsOptional()
-  @IsString()
-  image_id?: string;
 }
