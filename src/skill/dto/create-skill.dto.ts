@@ -4,8 +4,4 @@ export class CreateSkillDto {
   @IsNotEmpty()
   @IsString()
   name: string;
-
-  @IsNotEmpty()
-  @IsNumber()
-  level: number;
 }
