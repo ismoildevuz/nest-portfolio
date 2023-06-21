@@ -35,7 +35,7 @@ export class Project extends Model<Project, ProjectAttrs> {
   name: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.TEXT,
   })
   description: string;
 
