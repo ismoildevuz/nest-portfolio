@@ -6,6 +6,7 @@ import {
   UseInterceptors,
   UploadedFiles,
   Res,
+  Delete,
 } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -34,5 +35,10 @@ export class ImageController {
   @Get('/file/:imageName')
   async getImage(@Param('imageName') imageName: string, @Res() res: Response) {
     return this.imageService.getImage(imageName, res);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return this.imageService.remove(id);
   }
 }

@@ -46,6 +46,15 @@ import { Admin } from './admin/models/admin.model';
       username: process.env.POSTGRES_USER,
       password: String(process.env.POSTGRES_PASSWORD),
       database: process.env.POSTGRES_DB,
+      autoLoadModels: true,
+      logging: false,
+      ssl: true,
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      },
       models: [
         User,
         Image,
@@ -59,10 +68,8 @@ import { Admin } from './admin/models/admin.model';
         Comment,
         Chat,
         Message,
-        Admin
+        Admin,
       ],
-      autoLoadModels: true,
-      logging: false,
     }),
     UserModule,
     ImageModule,

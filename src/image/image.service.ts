@@ -10,6 +10,12 @@ import { v4 as uuid } from 'uuid';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Response } from 'express';
+import { Storage } from '@google-cloud/storage';
+
+const storage = new Storage({
+  projectId: 'upload-image-392818',
+  keyFilename: 'config/keyfile.json',
+});
 
 @Injectable()
 export class ImageService {
@@ -61,16 +67,18 @@ export class ImageService {
     try {
       const fileNames: string[] = [];
       for (let i = 0; i < images.length; i++) {
+        const bucketName = 'upload-image-nest';
+        const bucket = storage.bucket(bucketName);
+
         const fileName = (await this.generateUniqueFileName()) + '.jpg';
-        const filePath = path.resolve(__dirname, '..', 'static');
-        if (!fs.existsSync(filePath)) {
-          fs.mkdirSync(filePath, { recursive: true });
-        }
-        fs.writeFileSync(path.join(filePath, fileName), images[i].buffer);
+        const file = bucket.file(fileName);
+
+        await file.save(images[i].buffer, { resumable: false });
         fileNames.push(fileName);
       }
       return fileNames;
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         'Error with uploading images',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -79,27 +87,36 @@ export class ImageService {
   }
 
   getImage(imageName: string, res: Response) {
-    const imagePath = path.join(__dirname, '..', 'static', imageName);
-    if (!fs.existsSync(imagePath)) {
+    const bucketName = 'upload-image-nest';
+    const bucket = storage.bucket(bucketName);
+    const file = bucket.file(imageName);
+
+    const exists = file.exists();
+    if (!exists[0]) {
       throw new HttpException('Image not found', HttpStatus.NOT_FOUND);
     }
-    res.sendFile(imagePath);
+
+    const stream = file.createReadStream();
+    stream.pipe(res);
   }
 
   async removeFile(fileName: string) {
     try {
-      const filePath = path.resolve(__dirname, '..', 'static');
-      if (!fs.existsSync(filePath)) {
-        fs.mkdirSync(filePath, { recursive: true });
+      const bucketName = 'upload-image-nest';
+      const bucket = storage.bucket(bucketName);
+      const file = bucket.file(fileName);
+
+      const exists = file.exists();
+      if (exists[0]) {
+        await file.delete();
+        return fileName;
       }
-      fs.rmSync(path.join(filePath, fileName));
-      return fileName;
     } catch (error) {
-      return 'Error with deleting images';
-      // throw new HttpException(
-      //   'Error with deleting images',
-      //   HttpStatus.INTERNAL_SERVER_ERROR,
-      // );
+      console.log(error);
+      throw new HttpException(
+        'Error with deleting images',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
