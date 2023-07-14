@@ -67,9 +67,9 @@ export class JobService {
 
   async remove(id: string) {
     const job = await this.findOne(id);
-    await this.jobRepository.destroy({ where: { id } });
+    // await this.jobRepository.destroy({ where: { id } });
     if (job.image_name) {
-      await this.imageService.remove(job.image_name);
+      // await this.imageService.remove(job.image_name);
     }
     return job;
   }

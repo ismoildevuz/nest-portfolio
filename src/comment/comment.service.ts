@@ -53,7 +53,7 @@ export class CommentService {
 
   async remove(id: string) {
     const comment = await this.findOne(id);
-    await this.commentRepository.destroy({ where: { id } });
+    // await this.commentRepository.destroy({ where: { id } });
     return comment;
   }
 }

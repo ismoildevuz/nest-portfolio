@@ -65,9 +65,9 @@ export class SocialMediaService {
 
   async remove(id: string) {
     const socialMedia = await this.findOne(id);
-    await this.socialMediaRepository.destroy({ where: { id } });
+    // await this.socialMediaRepository.destroy({ where: { id } });
     if (socialMedia.image_name) {
-      await this.imageService.remove(socialMedia.image_name);
+      // await this.imageService.remove(socialMedia.image_name);
     }
     return socialMedia;
   }

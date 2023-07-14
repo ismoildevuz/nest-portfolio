@@ -93,9 +93,9 @@ export class ProjectService {
 
   async remove(id: string) {
     const project = await this.getOne(id);
-    await this.projectRepository.destroy({ where: { id } });
+    // await this.projectRepository.destroy({ where: { id } });
     if (project.image_name) {
-      await this.imageService.remove(project.image_name);
+      // await this.imageService.remove(project.image_name);
     }
     return project;
   }

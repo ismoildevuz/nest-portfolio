@@ -63,7 +63,7 @@ export class RatingService {
 
   async remove(id: string) {
     const rating = await this.findOne(id);
-    await this.ratingRepository.destroy({ where: { id } });
+    // await this.ratingRepository.destroy({ where: { id } });
     return rating;
   }
 }

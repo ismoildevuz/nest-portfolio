@@ -40,7 +40,7 @@ export class UserService {
 
   async remove(id: string) {
     const user = await this.findOne(id);
-    await this.userRepository.destroy({ where: { id } });
+    // await this.userRepository.destroy({ where: { id } });
     return user;
   }
 }

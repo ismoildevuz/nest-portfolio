@@ -72,9 +72,9 @@ export class EducationService {
 
   async remove(id: string) {
     const education = await this.getOne(id);
-    await this.educationRepository.destroy({ where: { id } });
+    // await this.educationRepository.destroy({ where: { id } });
     if (education.image_name) {
-      await this.imageService.remove(education.image_name);
+      // await this.imageService.remove(education.image_name);
     }
     return education;
   }

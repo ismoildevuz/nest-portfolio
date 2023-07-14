@@ -35,7 +35,7 @@ export class SkillService {
 
   async remove(id: string) {
     const skill = await this.getOne(id);
-    await this.skillRepository.destroy({ where: { id } });
+    // await this.skillRepository.destroy({ where: { id } });
     return skill;
   }
 

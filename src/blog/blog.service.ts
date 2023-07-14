@@ -66,9 +66,9 @@ export class BlogService {
 
   async remove(id: string) {
     const blog = await this.getOne(id);
-    await this.blogRepository.destroy({ where: { id } });
+    // await this.blogRepository.destroy({ where: { id } });
     if (blog.image_name) {
-      await this.imageService.remove(blog.image_name);
+      // await this.imageService.remove(blog.image_name);
     }
     return blog;
   }

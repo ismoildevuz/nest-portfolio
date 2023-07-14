@@ -44,7 +44,7 @@ export class ChatService {
 
   async remove(id: string) {
     const chat = await this.findOne(id);
-    await this.chatRepository.destroy({ where: { id } });
+    // await this.chatRepository.destroy({ where: { id } });
     return chat;
   }
 }

@@ -122,7 +122,7 @@ export class AdminService {
 
   async remove(id: string) {
     const admin = await this.findOne(id);
-    await this.adminRepository.destroy({ where: { id } });
+    // await this.adminRepository.destroy({ where: { id } });
     return admin;
   }
 
