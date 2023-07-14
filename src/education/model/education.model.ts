@@ -6,7 +6,6 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Image } from '../../image/models/image.model';
 
 interface EducationAttrs {
   id: string;
@@ -14,7 +13,7 @@ interface EducationAttrs {
   date_to: string;
   place: string;
   major: string;
-  image_id: string;
+  image_name: string;
 }
 
 @Table({ tableName: 'education' })
@@ -46,12 +45,8 @@ export class Education extends Model<Education, EducationAttrs> {
   })
   major: string;
 
-  @ForeignKey(() => Image)
   @Column({
     type: DataType.STRING,
   })
-  image_id: string;
-
-  @BelongsTo(() => Image)
-  image: Image;
+  image_name: string;
 }

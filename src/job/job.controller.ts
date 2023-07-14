@@ -7,24 +7,25 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles,
+  UploadedFile,
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageValidationPipe } from '../pipes/image-validation.pipe';
 
 @Controller('job')
 export class JobController {
   constructor(private readonly jobService: JobService) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(FileInterceptor('image'))
   async create(
     @Body() createJobDto: CreateJobDto,
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
   ) {
-    return this.jobService.create(createJobDto, images);
+    return this.jobService.create(createJobDto, image);
   }
 
   @Get()
@@ -38,13 +39,13 @@ export class JobController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(FileInterceptor('image'))
   async update(
     @Param('id') id: string,
     @Body() updateJobDto: UpdateJobDto,
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
   ) {
-    return this.jobService.update(id, updateJobDto, images);
+    return this.jobService.update(id, updateJobDto, image);
   }
 
   @Delete(':id')

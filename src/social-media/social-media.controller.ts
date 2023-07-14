@@ -7,24 +7,25 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles,
+  UploadedFile,
 } from '@nestjs/common';
 import { SocialMediaService } from './social-media.service';
 import { CreateSocialMediaDto } from './dto/create-social-media.dto';
 import { UpdateSocialMediaDto } from './dto/update-social-media.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageValidationPipe } from '../pipes/image-validation.pipe';
 
 @Controller('social-media')
 export class SocialMediaController {
   constructor(private readonly socialMediaService: SocialMediaService) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(FileInterceptor('image'))
   async create(
     @Body() createSocialMediaDto: CreateSocialMediaDto,
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
   ) {
-    return this.socialMediaService.create(createSocialMediaDto, images);
+    return this.socialMediaService.create(createSocialMediaDto, image);
   }
 
   @Get()
@@ -38,13 +39,13 @@ export class SocialMediaController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(FileInterceptor('image'))
   async update(
     @Param('id') id: string,
     @Body() updateSocialMediaDto: UpdateSocialMediaDto,
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
   ) {
-    return this.socialMediaService.update(id, updateSocialMediaDto, images);
+    return this.socialMediaService.update(id, updateSocialMediaDto, image);
   }
 
   @Delete(':id')

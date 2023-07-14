@@ -7,24 +7,25 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles,
+  UploadedFile,
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageValidationPipe } from '../pipes/image-validation.pipe';
 
 @Controller('blog')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(FileInterceptor('image'))
   async create(
     @Body() createBlogDto: CreateBlogDto,
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
   ) {
-    return this.blogService.create(createBlogDto, images);
+    return this.blogService.create(createBlogDto, image);
   }
 
   @Get()
@@ -38,13 +39,13 @@ export class BlogController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(FileInterceptor('image'))
   async update(
     @Param('id') id: string,
     @Body() updateBlogDto: UpdateBlogDto,
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
   ) {
-    return this.blogService.update(id, updateBlogDto, images);
+    return this.blogService.update(id, updateBlogDto, image);
   }
 
   @Delete(':id')

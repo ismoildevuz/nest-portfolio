@@ -4,41 +4,20 @@ import {
   Post,
   Param,
   UseInterceptors,
-  UploadedFiles,
+  UploadedFile,
   Res,
   Delete,
 } from '@nestjs/common';
 import { ImageService } from './image.service';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 
 @Controller('image')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
-  @Post()
-  @UseInterceptors(FilesInterceptor('images'))
-  async create(@UploadedFiles() images: Express.Multer.File[]) {
-    return this.imageService.create(images);
-  }
-
-  @Get()
-  async findAll() {
-    return this.imageService.findAll();
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.imageService.findOne(id);
-  }
-
-  @Get('/file/:imageName')
-  async getImage(@Param('imageName') imageName: string, @Res() res: Response) {
-    return this.imageService.getImage(imageName, res);
-  }
-
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.imageService.remove(id);
+  @Get(':fileName')
+  async getOne(@Param('fileName') fileName: string, @Res() res: Response) {
+    return this.imageService.getOne(fileName, res);
   }
 }

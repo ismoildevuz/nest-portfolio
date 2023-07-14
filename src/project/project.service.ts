@@ -5,7 +5,6 @@ import { Project } from './models/project.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { ImageService } from '../image/image.service';
 import { v4 as uuid } from 'uuid';
-import { Image } from '../image/models/image.model';
 import { Rating } from '../rating/models/rating.model';
 import { Comment } from '../comment/models/comment.model';
 import { User } from '../user/models/user.model';
@@ -17,16 +16,14 @@ export class ProjectService {
     private readonly imageService: ImageService,
   ) {}
 
-  async create(
-    createProjectDto: CreateProjectDto,
-    images: Express.Multer.File[],
-  ) {
-    const uploadedImages = await this.imageService.create(images);
+  async create(createProjectDto: CreateProjectDto, image: Express.Multer.File) {
+    let fileName = null;
+    if (image) fileName = await this.imageService.create(image);
     const newProject = await this.projectRepository.create({
       id: uuid(),
       views: 0,
       ...createProjectDto,
-      image_id: uploadedImages[0]?.id,
+      image_name: fileName,
     });
     return this.getOne(newProject.id);
   }
@@ -40,12 +37,9 @@ export class ProjectService {
         'link_project',
         'link_github',
         'views',
-        'image_id',
+        'image_name',
       ],
       include: [
-        {
-          model: Image,
-        },
         {
           model: Rating,
           attributes: ['id', 'rate'],
@@ -76,20 +70,20 @@ export class ProjectService {
   async update(
     id: string,
     updateProjectDto: UpdateProjectDto,
-    images: Express.Multer.File[],
+    image: Express.Multer.File,
   ) {
     const project = await this.getOne(id);
-    if (images.length) {
-      if (project.image_id) {
+    if (image) {
+      if (project.image_name) {
         await this.projectRepository.update(
-          { image_id: null },
+          { image_name: null },
           { where: { id } },
         );
-        await this.imageService.remove(project.image_id);
+        await this.imageService.remove(project.image_name);
       }
-      const uploadedImages = await this.imageService.create(images);
+      const fileName = await this.imageService.create(image);
       await this.projectRepository.update(
-        { image_id: uploadedImages[0]?.id },
+        { image_name: fileName },
         { where: { id } },
       );
     }
@@ -100,8 +94,8 @@ export class ProjectService {
   async remove(id: string) {
     const project = await this.getOne(id);
     await this.projectRepository.destroy({ where: { id } });
-    if (project.image_id) {
-      await this.imageService.remove(project.image_id);
+    if (project.image_name) {
+      await this.imageService.remove(project.image_name);
     }
     return project;
   }
@@ -116,12 +110,9 @@ export class ProjectService {
         'link_project',
         'link_github',
         'views',
-        'image_id',
+        'image_name',
       ],
       include: [
-        {
-          model: Image,
-        },
         {
           model: Rating,
           attributes: ['id', 'rate'],

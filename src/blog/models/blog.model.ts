@@ -1,19 +1,11 @@
-import {
-  BelongsTo,
-  Column,
-  DataType,
-  ForeignKey,
-  Model,
-  Table,
-} from 'sequelize-typescript';
-import { Image } from '../../image/models/image.model';
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
 interface BlogAttrs {
   id: string;
   title: string;
   body: string;
   views: number;
-  image_id: string;
+  image_name: string;
 }
 
 @Table({ tableName: 'blog' })
@@ -39,12 +31,8 @@ export class Blog extends Model<Blog, BlogAttrs> {
   })
   views: number;
 
-  @ForeignKey(() => Image)
   @Column({
     type: DataType.STRING,
   })
-  image_id: string;
-
-  @BelongsTo(() => Image)
-  image: Image;
+  image_name: string;
 }

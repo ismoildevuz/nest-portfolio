@@ -1,12 +1,4 @@
-import {
-  BelongsTo,
-  Column,
-  DataType,
-  ForeignKey,
-  Model,
-  Table,
-} from 'sequelize-typescript';
-import { Image } from '../../image/models/image.model';
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
 interface JobAttrs {
   id: string;
@@ -14,7 +6,7 @@ interface JobAttrs {
   date_to: string;
   company: string;
   position: string;
-  image_id: string;
+  image_name: string;
 }
 
 @Table({ tableName: 'job' })
@@ -46,12 +38,8 @@ export class Job extends Model<Job, JobAttrs> {
   })
   position: string;
 
-  @ForeignKey(() => Image)
   @Column({
     type: DataType.STRING,
   })
-  image_id: string;
-
-  @BelongsTo(() => Image)
-  image: Image;
+  image_name: string;
 }

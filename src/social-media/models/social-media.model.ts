@@ -1,18 +1,10 @@
-import {
-  BelongsTo,
-  Column,
-  DataType,
-  ForeignKey,
-  Model,
-  Table,
-} from 'sequelize-typescript';
-import { Image } from '../../image/models/image.model';
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
 interface SocialMediaAttrs {
   id: string;
   name: string;
   link: string;
-  image_id: string;
+  image_name: string;
 }
 
 @Table({ tableName: 'social_media' })
@@ -33,12 +25,8 @@ export class SocialMedia extends Model<SocialMedia, SocialMediaAttrs> {
   })
   link: string;
 
-  @ForeignKey(() => Image)
   @Column({
     type: DataType.STRING,
   })
-  image_id: string;
-
-  @BelongsTo(() => Image)
-  image: Image;
+  image_name: string;
 }

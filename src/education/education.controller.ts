@@ -7,24 +7,25 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles,
+  UploadedFile,
 } from '@nestjs/common';
 import { EducationService } from './education.service';
 import { CreateEducationDto } from './dto/create-education.dto';
 import { UpdateEducationDto } from './dto/update-education.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageValidationPipe } from '../pipes/image-validation.pipe';
 
 @Controller('education')
 export class EducationController {
   constructor(private readonly educationService: EducationService) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(FileInterceptor('image'))
   async create(
     @Body() createEducationDto: CreateEducationDto,
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
   ) {
-    return this.educationService.create(createEducationDto, images);
+    return this.educationService.create(createEducationDto, image);
   }
 
   @Get()
@@ -38,13 +39,13 @@ export class EducationController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(FileInterceptor('image'))
   async update(
     @Param('id') id: string,
     @Body() updateEducationDto: UpdateEducationDto,
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
   ) {
-    return this.educationService.update(id, updateEducationDto, images);
+    return this.educationService.update(id, updateEducationDto, image);
   }
 
   @Delete(':id')

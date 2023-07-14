@@ -5,7 +5,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { SocialMedia } from './models/social-media.model';
 import { v4 as uuid } from 'uuid';
 import { ImageService } from '../image/image.service';
-import { Image } from '../image/models/image.model';
 
 @Injectable()
 export class SocialMediaService {
@@ -16,21 +15,21 @@ export class SocialMediaService {
 
   async create(
     createSocialMediaDto: CreateSocialMediaDto,
-    images: Express.Multer.File[],
+    image: Express.Multer.File,
   ) {
-    const uploadedImages = await this.imageService.create(images);
+    let fileName = null;
+    if (image) fileName = await this.imageService.create(image);
     const newSocialMedia = await this.socialMediaRepository.create({
       id: uuid(),
       ...createSocialMediaDto,
-      image_id: uploadedImages[0]?.id,
+      image_name: fileName,
     });
     return this.getOne(newSocialMedia.id);
   }
 
   async findAll() {
     return this.socialMediaRepository.findAll({
-      attributes: ['id', 'name', 'link', 'image_id'],
-      include: [Image],
+      attributes: ['id', 'name', 'link', 'image_name'],
     });
   }
 
@@ -41,20 +40,20 @@ export class SocialMediaService {
   async update(
     id: string,
     updateSocialMediaDto: UpdateSocialMediaDto,
-    images: Express.Multer.File[],
+    image: Express.Multer.File,
   ) {
     const socialMedia = await this.getOne(id);
-    if (images.length) {
-      if (socialMedia.image_id) {
+    if (image) {
+      if (socialMedia.image_name) {
         await this.socialMediaRepository.update(
-          { image_id: null },
+          { image_name: null },
           { where: { id } },
         );
-        await this.imageService.remove(socialMedia.image_id);
+        await this.imageService.remove(socialMedia.image_name);
       }
-      const uploadedImages = await this.imageService.create(images);
+      const fileName = await this.imageService.create(image);
       await this.socialMediaRepository.update(
-        { image_id: uploadedImages[0]?.id },
+        { image_name: fileName },
         { where: { id } },
       );
     }
@@ -67,8 +66,8 @@ export class SocialMediaService {
   async remove(id: string) {
     const socialMedia = await this.findOne(id);
     await this.socialMediaRepository.destroy({ where: { id } });
-    if (socialMedia.image_id) {
-      await this.imageService.remove(socialMedia.image_id);
+    if (socialMedia.image_name) {
+      await this.imageService.remove(socialMedia.image_name);
     }
     return socialMedia;
   }
@@ -76,8 +75,7 @@ export class SocialMediaService {
   async getOne(id: string) {
     const socialMedia = await this.socialMediaRepository.findOne({
       where: { id },
-      attributes: ['id', 'name', 'link', 'image_id'],
-      include: [Image],
+      attributes: ['id', 'name', 'link', 'image_name'],
     });
     if (!socialMedia) {
       throw new HttpException('Social Media not found', HttpStatus.NOT_FOUND);

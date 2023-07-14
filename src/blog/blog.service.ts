@@ -5,7 +5,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Blog } from './models/blog.model';
 import { ImageService } from '../image/image.service';
 import { v4 as uuid } from 'uuid';
-import { Image } from '../image/models/image.model';
 
 @Injectable()
 export class BlogService {
@@ -14,21 +13,21 @@ export class BlogService {
     private readonly imageService: ImageService,
   ) {}
 
-  async create(createBlogDto: CreateBlogDto, images: Express.Multer.File[]) {
-    const uploadedImages = await this.imageService.create(images);
+  async create(createBlogDto: CreateBlogDto, image: Express.Multer.File) {
+    let fileName = null;
+    if (image) fileName = await this.imageService.create(image);
     const newBlog = await this.blogRepository.create({
       id: uuid(),
       views: 0,
       ...createBlogDto,
-      image_id: uploadedImages[0]?.id,
+      image_name: fileName,
     });
     return this.getOne(newBlog.id);
   }
 
   async findAll() {
     return this.blogRepository.findAll({
-      attributes: ['id', 'title', 'body', 'views', 'createdAt', 'image_id'],
-      include: [Image],
+      attributes: ['id', 'title', 'body', 'views', 'createdAt', 'image_name'],
     });
   }
 
@@ -44,17 +43,20 @@ export class BlogService {
   async update(
     id: string,
     updateBlogDto: UpdateBlogDto,
-    images: Express.Multer.File[],
+    image: Express.Multer.File,
   ) {
     const blog = await this.getOne(id);
-    if (images.length) {
-      if (blog.image_id) {
-        await this.blogRepository.update({ image_id: null }, { where: { id } });
-        await this.imageService.remove(blog.image_id);
+    if (image) {
+      if (blog.image_name) {
+        await this.blogRepository.update(
+          { image_name: null },
+          { where: { id } },
+        );
+        await this.imageService.remove(blog.image_name);
       }
-      const uploadedImages = await this.imageService.create(images);
+      const fileName = await this.imageService.create(image);
       await this.blogRepository.update(
-        { image_id: uploadedImages[0]?.id },
+        { image_name: fileName },
         { where: { id } },
       );
     }
@@ -65,8 +67,8 @@ export class BlogService {
   async remove(id: string) {
     const blog = await this.getOne(id);
     await this.blogRepository.destroy({ where: { id } });
-    if (blog.image_id) {
-      await this.imageService.remove(blog.image_id);
+    if (blog.image_name) {
+      await this.imageService.remove(blog.image_name);
     }
     return blog;
   }
@@ -74,8 +76,7 @@ export class BlogService {
   async getOne(id: string) {
     const blog = await this.blogRepository.findOne({
       where: { id },
-      attributes: ['id', 'title', 'body', 'views', 'createdAt', 'image_id'],
-      include: [Image],
+      attributes: ['id', 'title', 'body', 'views', 'createdAt', 'image_name'],
     });
     if (!blog) {
       throw new HttpException('Blog not found', HttpStatus.NOT_FOUND);

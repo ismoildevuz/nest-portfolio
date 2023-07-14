@@ -5,7 +5,6 @@ import { resolve } from 'path';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UserModule } from './user/user.module';
 import { User } from './user/models/user.model';
-import { Image } from './image/models/image.model';
 import { ImageModule } from './image/image.module';
 import { JobModule } from './job/job.module';
 import { Job } from './job/models/job.model';
@@ -57,7 +56,6 @@ import { Admin } from './admin/models/admin.model';
       },
       models: [
         User,
-        Image,
         Job,
         Education,
         SocialMedia,

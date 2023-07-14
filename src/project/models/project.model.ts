@@ -1,13 +1,4 @@
-import {
-  BelongsTo,
-  Column,
-  DataType,
-  ForeignKey,
-  HasMany,
-  Model,
-  Table,
-} from 'sequelize-typescript';
-import { Image } from '../../image/models/image.model';
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 import { Rating } from '../../rating/models/rating.model';
 import { Comment } from '../../comment/models/comment.model';
 
@@ -18,7 +9,7 @@ interface ProjectAttrs {
   link_project: string;
   link_github: string;
   views: number;
-  image_id: string;
+  image_name: string;
 }
 
 @Table({ tableName: 'project' })
@@ -54,14 +45,10 @@ export class Project extends Model<Project, ProjectAttrs> {
   })
   views: number;
 
-  @ForeignKey(() => Image)
   @Column({
     type: DataType.STRING,
   })
-  image_id: string;
-
-  @BelongsTo(() => Image)
-  image: Image;
+  image_name: string;
 
   @HasMany(() => Rating)
   rating: Rating;

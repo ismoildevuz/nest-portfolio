@@ -5,7 +5,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Education } from './model/education.model';
 import { v4 as uuid } from 'uuid';
 import { ImageService } from './../image/image.service';
-import { Image } from '../image/models/image.model';
 
 @Injectable()
 export class EducationService {
@@ -16,21 +15,28 @@ export class EducationService {
 
   async create(
     createEducationDto: CreateEducationDto,
-    images: Express.Multer.File[],
+    image: Express.Multer.File,
   ) {
-    const uploadedImages = await this.imageService.create(images);
+    let fileName = null;
+    if (image) fileName = await this.imageService.create(image);
     const newEducation = await this.educationRepository.create({
       id: uuid(),
       ...createEducationDto,
-      image_id: uploadedImages[0]?.id,
+      image_name: fileName,
     });
     return this.getOne(newEducation.id);
   }
 
   async findAll() {
     return this.educationRepository.findAll({
-      attributes: ['id', 'date_from', 'date_to', 'place', 'major', 'image_id'],
-      include: [Image],
+      attributes: [
+        'id',
+        'date_from',
+        'date_to',
+        'place',
+        'major',
+        'image_name',
+      ],
     });
   }
 
@@ -41,20 +47,20 @@ export class EducationService {
   async update(
     id: string,
     updateEducationDto: UpdateEducationDto,
-    images: Express.Multer.File[],
+    image: Express.Multer.File,
   ) {
     const education = await this.getOne(id);
-    if (images.length) {
-      if (education.image_id) {
+    if (image) {
+      if (education.image_name) {
         await this.educationRepository.update(
-          { image_id: null },
+          { image_name: null },
           { where: { id } },
         );
-        await this.imageService.remove(education.image_id);
+        await this.imageService.remove(education.image_name);
       }
-      const uploadedImages = await this.imageService.create(images);
+      const fileName = await this.imageService.create(image);
       await this.educationRepository.update(
-        { image_id: uploadedImages[0]?.id },
+        { image_name: fileName },
         { where: { id } },
       );
     }
@@ -67,8 +73,8 @@ export class EducationService {
   async remove(id: string) {
     const education = await this.getOne(id);
     await this.educationRepository.destroy({ where: { id } });
-    if (education.image_id) {
-      await this.imageService.remove(education.image_id);
+    if (education.image_name) {
+      await this.imageService.remove(education.image_name);
     }
     return education;
   }
@@ -76,8 +82,14 @@ export class EducationService {
   async getOne(id: string) {
     const education = await this.educationRepository.findOne({
       where: { id },
-      attributes: ['id', 'date_from', 'date_to', 'place', 'major', 'image_id'],
-      include: [Image],
+      attributes: [
+        'id',
+        'date_from',
+        'date_to',
+        'place',
+        'major',
+        'image_name',
+      ],
     });
     if (!education) {
       throw new HttpException('Education not found', HttpStatus.NOT_FOUND);
