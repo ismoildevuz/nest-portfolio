@@ -5,7 +5,7 @@ import { extname } from 'path';
 
 const storage = new Storage({
   projectId: 'upload-image-392818',
-  keyFilename: 'config/keyfile.json',
+  keyFilename: 'keyfile.json',
 });
 
 @Injectable()

@@ -1,15 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Param,
-  UseInterceptors,
-  UploadedFile,
-  Res,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
 import { ImageService } from './image.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 
 @Controller('image')
